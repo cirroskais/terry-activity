@@ -7,7 +7,7 @@ RUN bun --bun run build
 
 FROM oven/bun:1 AS release
 
-COPY --from=builder ./build .
+COPY --from=builder /home/bun/app/build .
 RUN bun install
 RUN rm .env.example
 
