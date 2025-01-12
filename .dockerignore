@@ -8,5 +8,4 @@ node_modules
 .prettierignore
 .prettierrc
 LICENSE
-postcss.config.js
 README.md

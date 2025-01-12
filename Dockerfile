@@ -1,5 +1,4 @@
 FROM oven/bun:1 AS builder
-WORKDIR /app
 
 COPY . .
 
@@ -8,7 +7,7 @@ RUN bun --bun run build
 
 FROM oven/bun:1 AS release
 
-COPY --from=builder /app/build .
+COPY --from=builder ./build .
 RUN bun install
 RUN rm .env.example
 
