@@ -1,0 +1,12 @@
+.github
+.svelte-kit
+build
+node_modules
+.env
+.gitignore
+.npmrc
+.prettierignore
+.prettierrc
+LICENSE
+postcss.config.js
+README.md
