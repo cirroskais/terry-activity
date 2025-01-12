@@ -1,11 +1,59 @@
 <script lang="ts">
-	import massive from '$lib/img/low taper fade.jpeg';
-	import trollface from '$lib/img/trollface.png';
+	let { data } = $props();
+
+	import blevins from '$lib/img/blevins.jpg';
+	import { DiscordSDK, RPCCloseCodes } from '@discord/embedded-app-sdk';
+	import { onMount } from 'svelte';
+
+	const discordSdk = new DiscordSDK(data.client_id);
+
+	onMount(async () => {
+		await discordSdk.ready();
+
+		const { code } = await discordSdk.commands
+			.authorize({
+				client_id: data.client_id,
+				response_type: 'code',
+				state: '',
+				prompt: 'none',
+				scope: ['identify', 'rpc.activities.write']
+			})
+			.catch((_) => ({ code: false as false }));
+		if (!code) return discordSdk.close(RPCCloseCodes.CLOSE_NORMAL, 'Refused authorization.');
+
+		const response = await fetch('./api/token', {
+			method: 'POST',
+			body: JSON.stringify({ code }),
+			headers: { 'Content-Type': 'application/json' }
+		});
+
+		const { access_token } = await response.json();
+
+		await discordSdk.commands.authenticate({ access_token });
+
+		await discordSdk.commands.setActivity({
+			activity: {
+				type: 0,
+				details: 'Details',
+				state: 'State',
+				instance: true,
+				secrets: {
+					join: 'joinsecret',
+					match: 'matchsecret'
+				},
+				timestamps: {
+					start: Date.now()
+					// end: Date.now() + 60_000
+				}
+			}
+		});
+	});
 </script>
 
-<a class="inline-block" href="/add?install=user">
-	<img src={massive} class="h-48 shadow-sm" alt="Ninja low taper fade" title="User Install" />
-</a>
-<a class="inline-block" href="/add?install=guild">
-	<img src={trollface} class="h-48 shadow-sm" alt="Ninja trollface shirt" title="Guild Install" />
-</a>
+<button
+	onclick={() => {
+		discordSdk.commands.openInviteDialog();
+	}}
+>
+	<img src={blevins} class="h-48 shadow-sm" alt={'Tyler "Ninja" Blevins'} />
+</button>
