@@ -6,4 +6,5 @@ services:
     networks:
       - default
 
-default:
+networks:
+  default:
