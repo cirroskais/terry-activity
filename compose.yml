@@ -1,0 +1,9 @@
+services:
+  web:
+    image: ghcr.io/cirroskais/terry-activity:main
+    env_file:
+      - .env
+    networks:
+      - default
+
+default:
